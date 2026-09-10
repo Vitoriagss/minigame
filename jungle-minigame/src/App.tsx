@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Entity {
   x: number;
@@ -11,7 +11,6 @@ interface Entity {
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,11 +35,9 @@ export default function App() {
     const gameLoop = () => {
       frameCount++;
 
-      // Atualiza movimento do jogador
       if ((keys['ArrowLeft'] || keys['a']) && player.x > 0) player.x -= player.speed;
       if ((keys['ArrowRight'] || keys['d']) && player.x < canvas.width - player.width) player.x += player.speed;
 
-      // Spawna itens que caem do topo
       if (frameCount % 60 === 0) {
         items.push({
           x: Math.random() * (canvas.width - 20),
@@ -52,20 +49,16 @@ export default function App() {
         });
       }
 
-      // Limpa a tela
       ctx.fillStyle = '#111827';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Desenha o jogador
       ctx.fillStyle = '#3b82f6';
       ctx.fillRect(player.x, player.y, player.width, player.height);
 
-      // Atualiza e desenha os itens
       for (let i = items.length - 1; i >= 0; i--) {
         const item = items[i];
         item.y += item.speed;
 
-        // Checagem de colisão simples (AABB)
         if (
           player.x < item.x + item.width &&
           player.x + player.width > item.x &&
@@ -77,7 +70,6 @@ export default function App() {
           continue;
         }
 
-        // Remove item que saiu da tela
         if (item.y > canvas.height) {
           items.splice(i, 1);
         } else {
